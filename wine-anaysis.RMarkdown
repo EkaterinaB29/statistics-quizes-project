@@ -1,0 +1,347 @@
+---
+title: "Wine Analysis"
+author: "Ekaterina Bochvaroska"
+date: "2025-04-28"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load data}
+red_wine <- read.csv("~/project-statistics/winequality-red.csv", sep=";")
+white_wine <- read.csv("~/project-statistics/winequality-white.csv", sep=";")
+```
+
+**Question 1**\
+Choose at least ve variables from the list above and graphically depict
+the distribution of these variables for red and for white wines. Compare
+and interpret the results.
+
+```{r red}
+# Variables: fixed acidity, volatile acidity, citric acid, residual sugar, alcohol
+
+variables <- c("fixed.acidity", "volatile.acidity", "citric.acid", "residual.sugar", "alcohol")
+
+# Set up plotting
+par(mfrow = c(2, 3))
+
+# Red wine
+for (var in variables) {
+  hist(red_wine[[var]], main = paste("Red Wine -", var), xlab = var, col = "red", border = "white")
+}
+
+
+
+# Reset
+par(mfrow = c(1, 1))
+```
+
+```{r white wine}
+# White wine
+par(mfrow = c(2, 3))
+for (var in variables) {
+  hist(white_wine[[var]], main = paste("White Wine -", var), xlab = var, col = "white", border = "black")
+}
+par(mfrow = c(1, 1))
+
+```
+
+\***Interpetation**
+
+1.***Fixed Acidity:*** Red wines have a wider spread of fixed acidity,
+centered around 8g/dm³, and are slightly right-skewed.White wines show a
+more symmetric distribution centered around 6–7g/dm³ with fewer extreme
+values.
+
+2.***Volatile Acidity:*** Red wines show higher volatile acidity,
+peaking around 0.5g/dm³, and a moderate right skew.White wines have
+lower volatile acidity, mostly below 0.5g/dm³, with a sharp peak and
+longer tail.
+
+3.**Citric Acid**: Red wines display a strong right-skewed distribution,
+with most values near 0.2g/dm³.White wines have more citric acid on
+average, with a slightly broader distribution centered around
+0.3–0.4g/dm³.
+
+4.***Residual Sugar:*** Both red and white wines are highly right-skewed
+for residual sugar.However, white wines have much larger extreme values
+(up to 60–70g/dm³), while red wines rarely exceed 15g/dm³.
+
+5.***Alcohol:*** Both distributions are right-skewed, but white wines
+tend to have slightly higher alcohol content on average than red wines.
+Peaks occur around 9–10% alcohol for both types.White wines show greater
+variability in residual sugar and alcohol content.
+
+**Question 2**\
+Calculate the quartiles and draw the box plot for (a) fixed acidity in
+red wines and (b) fixed acidity in white wines. Compare and interpret
+the results. Repeat the experiment for residual sugar and density.
+
+```{r quantiles}
+# Quartiles for fixed acidity (red and white)
+print("Red Wine Fixed Acidity Quartiles:")
+print(quantile(red_wine$fixed.acidity))
+print("White Wine Fixed Acidity Quartiles:")
+print(quantile(white_wine$fixed.acidity))
+
+# Quartiles for residual sugar
+print("Red Wine Residual Sugar Quartiles:")
+print(quantile(red_wine$residual.sugar))
+print("White Wine Residual Sugar Quartiles:")
+print(quantile(white_wine$residual.sugar))
+
+# Quartiles for density
+print("Red Wine Density Quartiles:")
+print(quantile(red_wine$density))
+print("White Wine Density Quartiles:")
+print(quantile(white_wine$density))
+```
+
+```{r plots fixed acidity}
+
+boxplot(red_wine$fixed.acidity, white_wine$fixed.acidity,
+        names = c("Red", "White"),
+        col = c("firebrick1", "lightgray"),
+        border = "black",
+        main = "Fixed Acidity Comparison",
+        ylab = "Fixed Acidity",
+        xlab = "Wine Type",
+        cex.main = 1.5,
+        cex.lab = 1.2,
+        cex.axis = 1.1,
+        lwd = 2,
+        ylim = c(0, 17))
+grid()
+
+```
+
+```{r plots residual sugar}
+boxplot(red_wine$residual.sugar, white_wine$residual.sugar,
+        names = c("Red", "White"),
+        col = c("firebrick1", "lightgray"),
+        border = "black",
+        main = "Residual Sugar Comparison",
+        ylab = "Residual Sugar",
+        xlab = "Wine Type",
+        cex.main = 1.5,
+        cex.lab = 1.2,
+        cex.axis = 1.1,
+        lwd = 2,
+        ylim = c(0, 70))
+grid()
+```
+
+```{r plots density}
+boxplot(red_wine$density, white_wine$density,
+        names = c("Red", "White"),
+        col = c("firebrick1", "lightgray"),
+        border = "black",
+        main = "Density Comparison",
+        ylab = "Density",
+        xlab = "Wine Type",
+        cex.main = 1.5, cex.lab = 1.2, cex.axis = 1.1, lwd = 2)
+grid()
+```
+
+*Fixed Acidity* - Red wine has a higher median fixed acidity compared to
+white wine. - The spread (interquartile range, IQR) is wider for red
+wine, meaning greater variability among red wines . - Red wines show
+more extreme outliers, while white wines have fewer visible outliers.
+Thus, red wines tend to have higher and more variable fixed acidity than
+white wines. White wines show a more consistent (narrower spread) level
+of fixed acidity.
+
+*Residual Sugar* - White wines have a much higher median residual sugar
+compared to red wines. - The spread for white wines is also much larger,
+with a longer whisker and more high extreme outliers. - Red wines mostly
+cluster at lower sugar levels with very little spread and fewer extreme
+values. Thus, we can conclude that white wines are significantly sweeter
+than red wines on average, and their residual sugar values vary much
+more widely. Red wines tend to have low and more consistent residual
+sugar content.\
+
+*Density* - Red wines have a slightly higher median density compared to
+white wines. - The spread for both red and white wines is similar, with
+a narrow interquartile range and few extreme outliers. - Red wines
+mostly cluster around a higher density level, while white wines are
+slightly lower and more consistent. Thus, we can conclude that red wines
+are marginally denser than white wines on average, and their density
+values vary minimally, reflecting a stable composition influenced by
+alcohol and sugar content.\
+
+**Question 3\
+**We would like to know whether mean fixed acidity of red wines of
+quality at most 6 is higher than mean fixed acidity of red wines of
+quality strictly larger than 6. Which statistical test would you use to
+answer this question and what are your conclusions? What would your
+answer be in the case of white wines? Repeat the experiment (for both
+red and white wines) for volatile acidity.
+
+```{r question3}
+# Separate groups for RED wine
+red_low_quality    <- subset(red_wine, quality <= 6)
+red_high_quality   <- subset(red_wine, quality > 6)
+
+# Separate groups for WHITE wine
+white_low_quality  <- subset(white_wine, quality <= 6)
+white_high_quality <- subset(white_wine, quality > 6)
+
+# Fixed acidity comparison (Red)
+test_fixed_red <- t.test(red_low_quality$fixed.acidity, red_high_quality$fixed.acidity,
+                         alternative = "greater")
+print(test_fixed_red)
+
+# Fixed acidity comparison (White)
+test_fixed_white <- t.test(white_low_quality$fixed.acidity, white_high_quality$fixed.acidity,
+                           alternative = "greater")
+print(test_fixed_white)
+
+# Volatile acidity comparison (Red)
+test_volatile_red <- t.test(red_low_quality$volatile.acidity, red_high_quality$volatile.acidity,
+                            alternative = "greater")
+print(test_volatile_red)
+
+# Volatile acidity comparison (White)
+test_volatile_white <- t.test(white_low_quality$volatile.acidity, white_high_quality$volatile.acidity,
+                              alternative = "greater")
+print(test_volatile_white)
+
+```
+
+Since we are comparing two independent groups and variances may differ,
+we use a Welch Two Sample t-test.
+
+***Fixed Acidity – Red Wine:*** The p-value is 1.00, much greater than
+0.05.We fail to reject the null hypothesis.There is no evidence that red
+wines of lower quality (≤6) have higher mean fixed acidity compared to
+higher quality red wines (\>6).In fact, the mean fixed acidity is
+slightly lower for lower quality wines (8.24 vs 8.85).
+
+***Fixed Acidity – White Wine:*** The p-value is 9.282e-10, much smaller
+than 0.05. We reject the null hypothesis.White wines of lower quality
+(≤6) have significantly higher mean fixed acidity than white wines of
+higher quality (\>6). (Mean fixed acidity: 6.89 vs 6.73.)
+
+***Volatile Acidity – Red Wine:*** The p-value is \< 2.2e-16, extremely
+small. We reject the null hypothesis.Red wines of lower quality (≤6)
+have a significantly higher mean volatile acidity compared to higher
+quality red wines (\>6). (Mean volatile acidity: 0.55 vs 0.41.)
+
+***Volatile Acidity – White Wine:*** The p-value is 4.205e-07, again
+much smaller than 0.05. We reject the null hypothesis. White wines of
+lower quality (≤6) have significantly higher mean volatile acidity
+compared to higher quality white wines (\>6). (Mean volatile acidity:
+0.28 vs 0.27.)
+
+\
+**Conclusion:** For fixed acidity, only white wines show a significant
+difference. For volatile acidity, both red and white wines show a
+significant difference: lower quality wines have higher volatile
+acidity.
+
+**Question 4:\
+**We would like to know whether there is a correlation between the
+perceived quality of red wines and the fixed acidity level. Which
+statistical test would you use to answer this question and what are your
+conclusions? Furthermore, test the correlation between the perceived
+quality of red wines and residual sugar levels. Lastly, repeat both
+tests for white wines and compare the results.
+
+```{r spearman}
+# Red wine: quality vs fixed acidity
+cor_fixed_red <- cor.test(red_wine$quality, red_wine$fixed.acidity, method = "spearman", exact = FALSE)
+print(cor_fixed_red)
+
+# Red wine: quality vs residual sugar
+cor_sugar_red <- cor.test(red_wine$quality, red_wine$residual.sugar, method = "spearman", exact = FALSE)
+print(cor_sugar_red)
+
+# White wine: quality vs fixed acidity
+cor_fixed_white <- cor.test(white_wine$quality, white_wine$fixed.acidity, method = "spearman", exact = FALSE)
+print(cor_fixed_white)
+
+# White wine: quality vs residual sugar
+cor_sugar_white <- cor.test(white_wine$quality, white_wine$residual.sugar, method = "spearman", exact = FALSE)
+print(cor_sugar_white)
+```
+
+**Results and Interpretation:\
+**Spearman's rank correlation test is used to assess the relationship
+between perceived quality and the variables fixed acidity and residual
+sugar for both red and white wines.The quality variable is ordinal and
+Spearman's test is suitable for ordinal data.
+
+**\
+*Red Wine (Fixed Acidity vs. Quality):*** Spearman's rank correlation
+coefficient ρ = 0.114, p-value = 4.801e-06. Since the p-value is less
+than 0.05, we reject the null hypothesis and conclude there is a
+statistically significant, but weak positive correlation between fixed
+acidity and quality in red wines. This suggests that higher fixed
+acidity is slightly associated with higher perceived quality.
+
+\
+***Red Wine (Residual Sugar vs. Quality):*** Spearman's rank correlation
+coefficient ρ = 0.032, p-value = 0.2002. Since the p-value is greater
+than 0.05, we fail to reject the null hypothesis. There is no
+statistically significant correlation between residual sugar and quality
+in red wines. This indicates that residual sugar levels do not notably
+influence the perceived quality of red wines.
+
+\
+***White Wine (Fixed Acidity vs. Quality):*** Spearman's rank
+correlation coefficient ρ = -0.084, p-value = 3.183e-09. Since the
+p-value is less than 0.05, we reject the null hypothesis and conclude
+there is a statistically significant, but weak negative correlation
+between fixed acidity and quality in white wines. This suggests that
+higher fixed acidity is slightly associated with lower perceived
+quality.
+
+**\
+*White Wine (Residual Sugar vs. Quality):*** Spearman's rank correlation
+coefficient ρ = -0.082, p-value = 8.822e-09. Since the p-value is less
+than 0.05, we reject the null hypothesis and conclude there is a
+statistically significant, but weak negative correlation between
+residual sugar and quality in white wines. This indicates that higher
+residual sugar is slightly associated with lower perceived quality.
+
+**Question 5**\
+For at least ve of the above mentioned variables check whether the data
+for red wines is normally distributed. Repeat the analysis for white
+wines and interpret the results.
+
+```{r shapiro}
+# Variables to test
+variables_to_test <- c("fixed.acidity", "volatile.acidity", "citric.acid", "residual.sugar", "alcohol")
+
+# Red wine normality tests
+shapiro_red <- lapply(variables_to_test, function(var) {
+  shapiro.test(red_wine[[var]])
+})
+names(shapiro_red) <- variables_to_test
+shapiro_red
+
+# White wine normality tests
+shapiro_white <- lapply(variables_to_test, function(var) {
+  shapiro.test(white_wine[[var]])
+})
+names(shapiro_white) <- variables_to_test
+shapiro_white
+```
+
+The Shapiro-Wilk normality tests were conducted for five variables
+(fixed acidity, volatile acidity, citric acid, residual sugar, and
+alcohol) for both red and white wines. For red wines, all five variables
+resulted in p-values much smaller than 0.05. Similarly, for white wines,
+all five variables also showed p-values below 0.05.
+
+Therefore, for both red and white wines, we reject the null hypothesis
+of normality for each tested variable. This indicates that none of the
+examined variables are normally distributed. Overall, the results
+suggest that the data distributions for fixed acidity, volatile acidity,
+citric acid, residual sugar, and alcohol are non-normal for both types
+of wine.
